@@ -1,30 +1,52 @@
-- name: Add Docker repository and update apt cache
-  apt_repository:
-    repo: deb https://apt.dockerproject.org/repo ubuntu-trusty main
-    update_cache: yes
+- name: Install aptitude
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+  tags: [docker]
+
+- name: Install required system packages
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+    update_cache: true
+  tags: [docker]
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
     state: present
   tags: [docker]
 
-- name: Docker is present
+- name: Add Docker repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+  tags: [docker]
+
+- name: Update apt and install docker-ce
   apt:
-    name: docker-engine
+    name: docker-ce
     state: latest
-    force: yes
+    update_cache: true
   tags: [docker]
 
-- name: Python-pip is present
-  apt: name=python-pip state=present
+- name: Install docker-compose
+  pip:
+    name: docker-compose
   tags: [docker]
 
-- name: Docker-py is present
-  pip: name=docker-py version=1.6.0 state=present
-  tags: [docker]
-
-- name: Docker Compose is present
-  get_url:
-    url: https://github.com/docker/compose/releases/download/1.11.1/docker-compose-Linux-x86_64
-    dest: /usr/local/bin/docker-compose
-    timeout: 60
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+    state: present
   tags: [docker]
 
 - name: Docker Compose permissions are set
