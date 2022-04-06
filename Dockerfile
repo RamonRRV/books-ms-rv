@@ -1,5 +1,5 @@
 FROM openjdk
-MAINTAINER Viktor Farcic "viktor@farcic.com"
+MAINTAINER RamonRRV
 
 ENV DB_DBNAME books
 ENV DB_COLLECTION books
